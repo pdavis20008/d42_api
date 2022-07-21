@@ -33,8 +33,8 @@ class d42_api:
         return 'Method not complete'
 
     def listAutoDiscovery(self,type='pingsweep'):
-        req = self.get(f'auto_discovery/{type}')
-        return req.json()['jobs']
+        results = self.get(f'auto_discovery/{type}')
+        return results.json()['jobs']
 
     def getHealthStats(self):
         results = requests.get(f'https://{self.ipaddress}:4343/healthstats/',verify=False)
