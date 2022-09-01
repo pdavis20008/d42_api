@@ -32,12 +32,25 @@ class d42_api:
         req = requests.delete(f'{self.base_url}{url_path}',verify=False,headers=self.headers)
         return req.status_code
 
+    ## Working with IP Addresses ##
     def findIp(self,ipaddress):
         results = self.get(url_path='1.0/search/',params=f"query=ip&string={ipaddress}")
         return results.json()['ips']
 
-    def assignIp(self,ipaddress):
-        return 'Method not complete'
+    def assignIp(self,ipaddress,label):
+        data = {
+            "ipaddress": ipaddress,
+            "available": "no",
+            "label": label,
+            "mac_address":"",
+            "device":"",
+            "type":"static"
+        }
+        results = self.post(url_path='1.0/ips/',data=data)
+        if results.status_code == 200:
+            return f"{ipaddress}/{label}: Configured successfully"
+        else:
+            return f"{ipaddress}/{label}: Something went wrong. Error {results.status_code}"
 
     def unassignIp(self,ipaddress,type):
         data = {
@@ -54,6 +67,7 @@ class d42_api:
         else:
             return f'{ipaddress}: Something went wrong. Error {results.status_code}'
 
+    ## Working with Devices ##
     def findDevice(self,devname):
         results = self.get(url_path=f'1.0/devices/name/{devname}')
         return results.json()
@@ -65,6 +79,7 @@ class d42_api:
         else:
             return f"{devid}: Something went wrong. Error {result}"
 
+    ## General Deployment information/health ##
     def listAutoDiscovery(self,type='pingsweep'):
         results = self.get(f'1.0/auto_discovery/{type}')
         return results.json()['jobs']
