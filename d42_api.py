@@ -1,3 +1,7 @@
+## Device42 API Wrapper
+## Built-in GET, POST, UPDATE, DELETE methods accessible via the d42_api object.
+## Main method currently used for testing new methods.
+
 import urllib3
 import requests
 import base64
@@ -36,6 +40,14 @@ class d42_api:
     def findIp(self,ipaddress):
         results = self.get(url_path='1.0/search/',params=f"query=ip&string={ipaddress}")
         return results.json()['ips']
+
+    def getAvailableIpsBySubnet(self,subnet):
+        results = self.get(url_path='1.0/ips/',params=f"available=yes&subnet_id={subnet}")
+        return results.json()['ips']
+
+    def nextIp(self,subnet):
+        results = self.get(url_path='1.0/suggest_ip/',params=f"subnet={subnet}")
+        return results.json()
 
     def assignIp(self,ipaddress,label):
         data = {
@@ -87,3 +99,4 @@ class d42_api:
     def getHealthStats(self):
         results = requests.get(f'https://{self.ipaddress}:4343/healthstats/',verify=False)
         return results.json()
+    
