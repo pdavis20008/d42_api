@@ -8,6 +8,7 @@ import base64
 from pprint import pprint
 from getpass import getpass
 import sys
+import csv
 urllib3.disable_warnings()
 
 
@@ -64,6 +65,17 @@ class d42_api:
         else:
             return f"{ipaddress}/{label}: Something went wrong. Error {results.status_code}"
 
+    def assignIpToDevice(self,ipaddress,device):
+        data = {
+            "ipaddress": ipaddress,
+            "device":device,
+        }
+        results = self.post(url_path='1.0/ips/',data=data)
+        if results.status_code == 200:
+            return f"{ipaddress}/{device}: Configured successfully"
+        else:
+            return f"{ipaddress}/{device}: Something went wrong. Error {results.status_code}"
+
     def unassignIp(self,ipaddress,type):
         data = {
             "ipaddress": ipaddress,
@@ -99,4 +111,3 @@ class d42_api:
     def getHealthStats(self):
         results = requests.get(f'https://{self.ipaddress}:4343/healthstats/',verify=False)
         return results.json()
-    
